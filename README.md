@@ -8,6 +8,7 @@ It keeps the upstream AmneziaWG protocol and Android application identity while 
 - Persistent connection notification while a userspace VPN tunnel is active.
 - One-tap **Stop** action in the notification to disconnect without reopening the app.
 - Notification opens the AmneziaWG app when tapped.
+- Quick Settings tile for one-tap tunnel toggle from Samsung, Xiaomi, Pixel and other Android control panels.
 
 The upstream Play Store build is available at [org.amnezia.awg](https://play.google.com/store/apps/details?id=org.amnezia.awg).
 

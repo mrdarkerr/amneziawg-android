@@ -6,24 +6,29 @@
 package org.amnezia.awg.preference
 
 import android.app.StatusBarManager
+import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
+import android.provider.Settings
 import android.util.AttributeSet
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.preference.Preference
 import org.amnezia.awg.QuickTileService
 import org.amnezia.awg.R
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class QuickTilePreference(context: Context, attrs: AttributeSet?) : Preference(context, attrs) {
     override fun getSummary() = context.getString(R.string.quick_settings_tile_add_summary)
 
     override fun getTitle() = context.getString(R.string.quick_settings_tile_add_title)
 
     override fun onClick() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            showManualAddInstructions()
+            return
+        }
         val statusBarManager = context.getSystemService(StatusBarManager::class.java)
         statusBarManager.requestAddTileService(
             ComponentName(context, QuickTileService::class.java),
@@ -46,5 +51,21 @@ class QuickTilePreference(context: Context, attrs: AttributeSet?) : Preference(c
                     Toast.makeText(context, context.getString(R.string.quick_settings_tile_add_failure, it), Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showManualAddInstructions() {
+        AlertDialog.Builder(context)
+            .setTitle(R.string.quick_settings_tile_manual_title)
+            .setMessage(R.string.quick_settings_tile_manual_summary)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.quick_settings_tile_open_settings) { _, _ ->
+                val intent = Intent("android.settings.QUICK_SETTINGS_SETTINGS").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try {
+                    context.startActivity(intent)
+                } catch (_: Throwable) {
+                    context.startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }
+            }
+            .show()
     }
 }

@@ -149,14 +149,29 @@ class QuickTileService : TileService() {
                 tile.label = getString(R.string.app_name)
                 tile.state = Tile.STATE_INACTIVE
                 tile.icon = iconOff
+                updateStateText(tile, getString(R.string.quick_settings_tile_no_tunnel))
             }
             else -> {
-                tile.label = tunnel.name
+                tile.label = getString(R.string.app_name)
                 tile.state = if (tunnel.state == Tunnel.State.UP) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
                 tile.icon = if (tunnel.state == Tunnel.State.UP) iconOn else iconOff
+                updateStateText(
+                    tile,
+                    if (tunnel.state == Tunnel.State.UP)
+                        getString(R.string.quick_settings_tile_connected, tunnel.name)
+                    else
+                        getString(R.string.quick_settings_tile_disconnected, tunnel.name)
+                )
             }
         }
         tile.updateTile()
+    }
+
+    private fun updateStateText(tile: Tile, text: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            tile.subtitle = text
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            tile.stateDescription = text
     }
 
     private inner class OnStateChangedCallback : OnPropertyChangedCallback() {

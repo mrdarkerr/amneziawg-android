@@ -211,6 +211,13 @@
     <string name="quick_settings_tile_add_summary">The shortcut tile toggles the most recent tunnel</string>
     <string name="quick_settings_tile_add_failure">Unable to add shortcut tile: error %d</string>
     <string name="quick_settings_tile_action">Toggle tunnel</string>
+    <string name="quick_settings_tile_label">AmneziaWG</string>
+    <string name="quick_settings_tile_connected">%1$s connected</string>
+    <string name="quick_settings_tile_disconnected">%1$s disconnected</string>
+    <string name="quick_settings_tile_no_tunnel">Open AmneziaWG to select a tunnel</string>
+    <string name="quick_settings_tile_manual_title">Add AmneziaWG to Quick Settings</string>
+    <string name="quick_settings_tile_manual_summary">Open the Quick Settings panel, tap Edit or the three-dot menu, then drag the AmneziaWG tile into the active tiles. This works on Samsung, Xiaomi, Pixel and other Android devices.</string>
+    <string name="quick_settings_tile_open_settings">Open Quick Settings</string>
     <string name="restore_on_boot_summary_off">Will not bring up enabled tunnels at boot</string>
     <string name="restore_on_boot_summary_on">Will bring up enabled tunnels at boot</string>
     <string name="restore_on_boot_title">Restore on boot</string>
