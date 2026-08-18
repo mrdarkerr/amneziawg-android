@@ -5,8 +5,15 @@
 
 package org.amnezia.awg.backend;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.system.OsConstants;
@@ -21,6 +28,7 @@ import org.amnezia.awg.config.InetNetwork;
 import org.amnezia.awg.config.Peer;
 import org.amnezia.awg.crypto.Key;
 import org.amnezia.awg.crypto.KeyFormatException;
+import org.amnezia.awg.tunnel.R;
 import org.amnezia.awg.util.NonNullForAll;
 
 import java.net.InetAddress;
@@ -46,6 +54,7 @@ public final class GoBackend implements Backend {
     private static final int DNS_RESOLUTION_RETRIES = 10;
     private static final String TAG = "AmneziaWG/GoBackend";
     @Nullable private static AlwaysOnCallback alwaysOnCallback;
+    @Nullable private static StopCallback stopCallback;
     private static GhettoCompletableFuture<VpnService> vpnService = new GhettoCompletableFuture<>();
     private final Context context;
     @Nullable private Config currentConfig;
@@ -72,6 +81,10 @@ public final class GoBackend implements Backend {
      */
     public static void setAlwaysOnCallback(final AlwaysOnCallback cb) {
         alwaysOnCallback = cb;
+    }
+
+    public static void setStopCallback(final StopCallback cb) {
+        stopCallback = cb;
     }
 
 
@@ -294,7 +307,7 @@ public final class GoBackend implements Backend {
      * @throws Exception Exception raised while changing tunnel state.
      */
     @Override
-    public State setState(final Tunnel tunnel, State state, @Nullable final Config config) throws Exception {
+    public synchronized State setState(final Tunnel tunnel, State state, @Nullable final Config config) throws Exception {
         final State originalState = getState(tunnel);
 
         if (state == State.TOGGLE)
@@ -333,7 +346,11 @@ public final class GoBackend implements Backend {
             final VpnService service;
             if (!vpnService.isDone()) {
                 Log.d(TAG, "Requesting to start VpnService");
-                context.startService(new Intent(context, VpnService.class));
+                final Intent serviceIntent = new Intent(context, VpnService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    context.startForegroundService(serviceIntent);
+                else
+                    context.startService(serviceIntent);
             }
 
             try {
@@ -426,6 +443,8 @@ public final class GoBackend implements Backend {
             currentTunnel = tunnel;
             currentConfig = config;
 
+            service.showConnectedNotification(tunnel.getName());
+
             service.protect(awgGetSocketV4(currentTunnelHandle));
             service.protect(awgGetSocketV6(currentTunnelHandle));
 
@@ -442,7 +461,9 @@ public final class GoBackend implements Backend {
             currentConfig = null;
             awgTurnOff(handleToClose);
             try {
-                vpnService.get(0, TimeUnit.NANOSECONDS).stopSelf();
+                final VpnService service = vpnService.get(0, TimeUnit.NANOSECONDS);
+                service.hideConnectedNotification();
+                service.stopSelf();
             } catch (final TimeoutException ignored) { }
         }
 
@@ -455,6 +476,10 @@ public final class GoBackend implements Backend {
      */
     public interface AlwaysOnCallback {
         void alwaysOnTriggered();
+    }
+
+    public interface StopCallback {
+        void stopRequested(Tunnel tunnel);
     }
 
     // TODO: When we finally drop API 21 and move to API 24, delete this and replace with the ordinary CompletableFuture.
@@ -490,6 +515,9 @@ public final class GoBackend implements Backend {
      * {@link android.net.VpnService} implementation for {@link GoBackend}
      */
     public static class VpnService extends android.net.VpnService {
+        private static final String ACTION_STOP_TUNNEL = "org.amnezia.awg.action.STOP_ACTIVE_TUNNEL";
+        private static final String NOTIFICATION_CHANNEL_ID = "amneziawg_connection";
+        private static final int NOTIFICATION_ID = 41820;
         @Nullable private GoBackend owner;
 
         public Builder getBuilder() {
@@ -504,6 +532,7 @@ public final class GoBackend implements Backend {
 
         @Override
         public void onDestroy() {
+            hideConnectedNotification();
             if (owner != null) {
                 final Tunnel tunnel = owner.currentTunnel;
                 if (tunnel != null) {
@@ -522,6 +551,28 @@ public final class GoBackend implements Backend {
         @Override
         public int onStartCommand(@Nullable final Intent intent, final int flags, final int startId) {
             vpnService.complete(this);
+            showStartingNotification();
+            if (intent != null && ACTION_STOP_TUNNEL.equals(intent.getAction())) {
+                final GoBackend currentOwner = owner;
+                final Tunnel tunnel = currentOwner == null ? null : currentOwner.currentTunnel;
+                final StopCallback callback = stopCallback;
+                if (tunnel != null && callback != null) {
+                    callback.stopRequested(tunnel);
+                } else if (currentOwner != null && tunnel != null) {
+                    Log.w(TAG, "Stop callback unavailable; stopping tunnel without persisted UI state");
+                    new Thread(() -> {
+                        try {
+                            currentOwner.setState(tunnel, State.DOWN, null);
+                        } catch (final Exception e) {
+                            Log.e(TAG, "Unable to stop tunnel from notification", e);
+                        }
+                    }, "NotificationStopTunnelFallback").start();
+                } else {
+                    hideConnectedNotification();
+                    stopSelf();
+                }
+                return START_NOT_STICKY;
+            }
             if (intent == null || intent.getComponent() == null || !intent.getComponent().getPackageName().equals(getPackageName())) {
                 Log.d(TAG, "Service started by Always-on VPN feature");
                 if (alwaysOnCallback != null)
@@ -532,6 +583,88 @@ public final class GoBackend implements Backend {
 
         public void setOwner(final GoBackend owner) {
             this.owner = owner;
+        }
+
+        private String getApplicationLabel() {
+            try {
+                final PackageManager packageManager = getPackageManager();
+                final ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(), 0);
+                return packageManager.getApplicationLabel(applicationInfo).toString();
+            } catch (final PackageManager.NameNotFoundException ignored) {
+                return getString(R.string.notification_app_name_fallback);
+            }
+        }
+
+        private void createNotificationChannel() {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+                return;
+            final NotificationChannel channel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    getString(R.string.notification_channel_name),
+                    NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription(getString(R.string.notification_channel_description));
+            channel.enableLights(false);
+            channel.enableVibration(false);
+            channel.setLightColor(Color.TRANSPARENT);
+            final NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        private Notification buildConnectedNotification(final String tunnelName) {
+            return buildConnectionNotification(getString(R.string.notification_connected_to, tunnelName));
+        }
+
+        private Notification buildStartingNotification() {
+            return buildConnectionNotification(getString(R.string.notification_starting));
+        }
+
+        private Notification buildConnectionNotification(final String statusText) {
+            createNotificationChannel();
+            final Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
+            final PendingIntent contentIntent = launchIntent == null ? null : PendingIntent.getActivity(
+                    this,
+                    0,
+                    launchIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            final Intent stopIntent = new Intent(this, VpnService.class).setAction(ACTION_STOP_TUNNEL);
+            final PendingIntent stopPendingIntent = PendingIntent.getService(
+                    this,
+                    1,
+                    stopIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            final Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    ? new Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    : new Notification.Builder(this);
+            builder.setSmallIcon(R.drawable.ic_vpn_notification)
+                    .setContentTitle(getApplicationLabel())
+                    .setContentText(statusText)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setOngoing(true)
+                    .setOnlyAlertOnce(true)
+                    .setShowWhen(false)
+                    .addAction(new Notification.Action.Builder(
+                            null,
+                            getString(R.string.notification_stop),
+                            stopPendingIntent).build());
+            if (contentIntent != null)
+                builder.setContentIntent(contentIntent);
+            return builder.build();
+        }
+
+        public void showConnectedNotification(final String tunnelName) {
+            startForeground(NOTIFICATION_ID, buildConnectedNotification(tunnelName));
+        }
+
+        private void showStartingNotification() {
+            startForeground(NOTIFICATION_ID, buildStartingNotification());
+        }
+
+        public void hideConnectedNotification() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                stopForeground(STOP_FOREGROUND_REMOVE);
+            else
+                stopForeground(true);
         }
     }
 }

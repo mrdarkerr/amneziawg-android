@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_app_name_fallback">AmneziaWG</string>
+    <string name="notification_channel_name">VPN connection</string>
+    <string name="notification_channel_description">Shows the active AmneziaWG tunnel</string>
+    <string name="notification_starting">Starting VPN…</string>
+    <string name="notification_connected_to">Connected to %1$s</string>
+    <string name="notification_stop">Stop</string>
+</resources>

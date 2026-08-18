@@ -1,8 +1,15 @@
-# Android GUI for [AmneziaWG](https://amnezia.org/learn-more/31_amneziawg)
+# AmneziaWG for Android — mrdarkerr fork
 
-**[Download from the Play Store](https://play.google.com/store/apps/details?id=org.amnezia.awg)**
+This repository is a maintained fork of [amnezia-vpn/amneziawg-android](https://github.com/amnezia-vpn/amneziawg-android).
+It keeps the upstream AmneziaWG protocol and Android application identity while adding practical client features.
 
-This is an Android GUI for [AmneziaWG](https://amnezia.org/learn-more/31_amneziawg).
+## Fork features
+
+- Persistent connection notification while a userspace VPN tunnel is active.
+- One-tap **Stop** action in the notification to disconnect without reopening the app.
+- Notification opens the AmneziaWG app when tapped.
+
+The upstream Play Store build is available at [org.amnezia.awg](https://play.google.com/store/apps/details?id=org.amnezia.awg).
 
 ## Building
 

@@ -20,6 +20,7 @@ import org.amnezia.awg.R
 import org.amnezia.awg.backend.Statistics
 import org.amnezia.awg.backend.StatusCallback
 import org.amnezia.awg.backend.Tunnel
+import org.amnezia.awg.backend.GoBackend
 import org.amnezia.awg.configStore.ConfigStore
 import org.amnezia.awg.databinding.ObservableSortedKeyedArrayList
 import org.amnezia.awg.util.ErrorMessages
@@ -100,6 +101,16 @@ class TunnelManager(private val configStore: ConfigStore) : BaseObservable() {
     }
 
     fun onCreate() {
+        GoBackend.setStopCallback { tunnel ->
+            applicationScope.launch {
+                val observableTunnel = tunnel as? ObservableTunnel ?: return@launch
+                try {
+                    setTunnelState(observableTunnel, Tunnel.State.DOWN)
+                } catch (e: Throwable) {
+                    Log.e(TAG, "Failed to stop tunnel from notification", e)
+                }
+            }
+        }
         applicationScope.launch {
             try {
                 onTunnelsLoaded(withContext(Dispatchers.IO) { configStore.enumerate() }, withContext(Dispatchers.IO) { getBackend().runningTunnelNames })
