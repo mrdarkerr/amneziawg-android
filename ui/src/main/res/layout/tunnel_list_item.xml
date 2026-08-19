@@ -13,22 +13,25 @@
 
     <org.amnezia.awg.widget.MultiselectableRelativeLayout
         android:id="@+id/tunnel_list_item"
-        android:layout_width="176dp"
-        android:layout_height="104dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/super_ip_config_card"
         android:focusable="true"
-        android:padding="14dp">
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp">
 
         <ImageButton
             android:id="@+id/tunnel_more"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/super_ip_details"
-            android:padding="8dp"
+            android:padding="10dp"
             android:src="@drawable/ic_action_more_vert"
             app:tint="@color/super_ip_text_secondary" />
 
@@ -54,7 +57,7 @@
             android:layout_alignParentStart="true"
             android:text="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @string/tunnel_status_connected : (item.connectionStatus == ConnectionStatus.CONNECTING ? @string/tunnel_status_connecting : @string/super_ip_ready)}"
             android:textColor="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @color/tunnel_status_connected : @color/super_ip_text_secondary}"
-            android:textSize="13sp"
+            android:textSize="12sp"
             tools:text="Ready" />
     </org.amnezia.awg.widget.MultiselectableRelativeLayout>
 </layout>

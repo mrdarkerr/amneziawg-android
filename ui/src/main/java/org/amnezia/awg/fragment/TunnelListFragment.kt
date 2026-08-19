@@ -105,11 +105,7 @@ class TunnelListFragment : BaseFragment() {
         binding = TunnelListFragmentBinding.inflate(inflater, container, false)
         val bottomSheet = AddTunnelsSheet()
         binding?.apply {
-            tunnelList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
-                requireContext(),
-                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
-                false
-            )
+            tunnelList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
             createFab.setOnClickListener {
                 if (childFragmentManager.findFragmentByTag("BOTTOM_SHEET") != null)
                     return@setOnClickListener

@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
         <import type="org.amnezia.awg.model.ObservableTunnel" />
         <variable name="fragment" type="org.amnezia.awg.fragment.TunnelListFragment" />
@@ -17,133 +16,100 @@
         android:background="@color/super_ip_background"
         android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="520dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="20dp">
-
-        <TextView
-            android:id="@+id/brand_title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="@string/app_name"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="@color/super_ip_text_primary"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:minHeight="520dp"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp">
 
-        <TextView
-            android:id="@+id/connection_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/super_ip_choose_config"
-            android:textColor="@color/super_ip_text_secondary"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/brand_title" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/connect_button"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
-            android:layout_marginTop="28dp"
-            android:text="@string/super_ip_connect"
-            android:textAllCaps="false"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/super_ip_accent"
-            app:cornerRadius="95dp"
-            app:icon="@drawable/ic_vpn_notification"
-            app:iconGravity="textTop"
-            app:iconPadding="14dp"
-            app:iconSize="34dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/connection_hint" />
-
-        <TextView
-            android:id="@+id/configs_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:text="@string/super_ip_configs"
-            android:textColor="@color/super_ip_text_primary"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/connect_button" />
-
-        <HorizontalScrollView
-            android:id="@+id/config_carousel"
-            android:layout_width="0dp"
-            android:layout_height="132dp"
-            android:layout_marginTop="12dp"
-            android:clipToPadding="false"
-            android:fillViewport="false"
-            android:overScrollMode="never"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/configs_title">
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/brand_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/app_name"
+                android:textColor="@color/super_ip_text_primary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/connection_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:text="@string/super_ip_choose_config"
+                android:textColor="@color/super_ip_text_secondary"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/connect_button"
+                android:layout_width="166dp"
+                android:layout_height="166dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"
+                android:text="@string/super_ip_connect"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/super_ip_accent"
+                app:cornerRadius="83dp"
+                app:icon="@drawable/ic_vpn_notification"
+                app:iconGravity="textTop"
+                app:iconPadding="10dp"
+                app:iconSize="30dp" />
+
+            <TextView
+                android:id="@+id/configs_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="@string/super_ip_configs"
+                android:textColor="@color/super_ip_text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/empty_hint"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:gravity="center"
+                android:text="@string/super_ip_empty_configs"
+                android:textColor="@color/super_ip_text_secondary"
+                android:visibility="@{tunnels.size() == 0 ? android.view.View.VISIBLE : android.view.View.GONE}" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tunnel_list"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:clipToPadding="false"
-                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
-                android:paddingEnd="8dp"
                 android:visibility="@{tunnels.size() > 0 ? android.view.View.VISIBLE : android.view.View.GONE}"
                 app:configurationHandler="@{rowConfigurationHandler}"
                 app:items="@{tunnels}"
                 app:layout="@{@layout/tunnel_list_item}"
-                tools:itemCount="3"
+                tools:itemCount="4"
                 tools:listitem="@layout/tunnel_list_item" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/create_fab"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="96dp"
-                android:layout_height="104dp"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/super_ip_add"
                 android:textAllCaps="false"
                 android:textColor="@color/super_ip_text_primary"
-                app:cornerRadius="22dp"
+                app:cornerRadius="16dp"
                 app:icon="@drawable/ic_action_add_white"
-                app:iconGravity="textTop"
-                app:iconPadding="8dp"
+                app:iconGravity="textStart"
                 app:iconTint="@color/super_ip_accent" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/empty_hint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/super_ip_empty_configs"
-            android:textColor="@color/super_ip_text_secondary"
-            android:visibility="@{tunnels.size() == 0 ? android.view.View.VISIBLE : android.view.View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/config_carousel"
-            app:layout_constraintEnd_toEndOf="@id/config_carousel"
-            app:layout_constraintStart_toStartOf="@id/config_carousel"
-            app:layout_constraintTop_toTopOf="@id/config_carousel" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

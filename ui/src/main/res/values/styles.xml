@@ -20,6 +20,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SuperIpHomeTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/super_ip_background</item>
+        <item name="android:statusBarColor">@color/super_ip_background</item>
+        <item name="android:navigationBarColor">@color/super_ip_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="AmneziaWgTheme.MaterialCardView" parent="Widget.Material3.CardView.Elevated">
         <item name="cornerRadius">4dp</item>
         <item name="contentPadding">8dp</item>
