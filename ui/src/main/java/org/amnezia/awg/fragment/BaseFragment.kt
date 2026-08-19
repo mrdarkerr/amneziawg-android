@@ -33,10 +33,10 @@ import kotlinx.coroutines.launch
 abstract class BaseFragment : Fragment(), OnSelectedTunnelChangedListener {
     private var pendingTunnel: ObservableTunnel? = null
     private var pendingTunnelUp: Boolean? = null
-    private val permissionActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val permissionActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val tunnel = pendingTunnel
         val checked = pendingTunnelUp
-        if (tunnel != null && checked != null)
+        if (result.resultCode == android.app.Activity.RESULT_OK && tunnel != null && checked != null)
             setTunnelStateWithPermissionsResult(tunnel, checked)
         pendingTunnel = null
         pendingTunnelUp = null

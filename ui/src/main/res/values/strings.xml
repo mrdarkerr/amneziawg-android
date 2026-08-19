@@ -69,6 +69,7 @@
     <string name="super_ip_choose_config">Choose a config to start</string>
     <string name="super_ip_selected_config">%1$s selected</string>
     <string name="super_ip_connected_to">Connected to %1$s</string>
+    <string name="super_ip_connecting_to">Connecting to %1$s…</string>
     <string name="super_ip_configs">Your configs</string>
     <string name="super_ip_add">Add</string>
     <string name="super_ip_details">Details</string>

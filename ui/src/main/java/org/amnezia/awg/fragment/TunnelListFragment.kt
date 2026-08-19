@@ -53,7 +53,7 @@ class TunnelListFragment : BaseFragment() {
     private var binding: TunnelListFragmentBinding? = null
     private val selectedStateCallback = object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-            if (propertyId == 0 || propertyId == org.amnezia.awg.BR.state)
+            if (propertyId == 0 || propertyId == org.amnezia.awg.BR.state || propertyId == org.amnezia.awg.BR.connectionStatus)
                 updateConnectButton(selectedTunnel)
         }
     }
@@ -230,10 +230,13 @@ class TunnelListFragment : BaseFragment() {
 
     private fun updateConnectButton(tunnel: ObservableTunnel?) {
         val currentBinding = binding ?: return
-        val connected = tunnel?.state == org.amnezia.awg.backend.Tunnel.State.UP
-        currentBinding.connectButton.text = getString(if (connected) R.string.super_ip_disconnect else R.string.super_ip_connect)
+        val isUp = tunnel?.state == org.amnezia.awg.backend.Tunnel.State.UP
+        val connected = tunnel?.connectionStatus == ObservableTunnel.ConnectionStatus.CONNECTED
+        val connecting = tunnel?.connectionStatus == ObservableTunnel.ConnectionStatus.CONNECTING
+        currentBinding.connectButton.text = getString(if (isUp) R.string.super_ip_disconnect else R.string.super_ip_connect)
         currentBinding.connectionHint.text = when {
             tunnel == null -> getString(R.string.super_ip_choose_config)
+            connecting -> getString(R.string.super_ip_connecting_to, tunnel.name)
             connected -> getString(R.string.super_ip_connected_to, tunnel.name)
             else -> getString(R.string.super_ip_selected_config, tunnel.name)
         }
