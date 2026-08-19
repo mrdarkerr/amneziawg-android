@@ -126,4 +126,13 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
             }
         }
     }
+
+    fun editSelectedTunnel() {
+        if (selectedTunnel == null || supportFragmentManager.isStateSaved) return
+        supportFragmentManager.commit {
+            replace(R.id.detail_container, TunnelEditorFragment())
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            addToBackStack(null)
+        }
+    }
 }

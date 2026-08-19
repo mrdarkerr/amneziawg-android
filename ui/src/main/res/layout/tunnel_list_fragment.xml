@@ -14,69 +14,125 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/super_ip_background"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="520dp"
+            android:minHeight="560dp"
             android:orientation="vertical"
             android:paddingStart="20dp"
             android:paddingTop="18dp"
             android:paddingEnd="20dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="28dp">
 
-            <TextView
-                android:id="@+id/brand_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/app_name"
-                android:textColor="@color/super_ip_text_primary"
-                android:textSize="26sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/connection_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:text="@string/super_ip_choose_config"
-                android:textColor="@color/super_ip_text_secondary"
-                android:textSize="14sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/connect_button"
-                android:layout_width="166dp"
-                android:layout_height="166dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="18dp"
-                android:text="@string/super_ip_connect"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/super_ip_accent"
-                app:cornerRadius="83dp"
-                app:icon="@drawable/ic_vpn_notification"
-                app:iconGravity="textTop"
-                app:iconPadding="10dp"
-                app:iconSize="30dp" />
-
-            <TextView
-                android:id="@+id/configs_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="@string/super_ip_configs"
-                android:textColor="@color/super_ip_text_primary"
-                android:textSize="17sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/brand_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="-0.02"
+                        android:text="@string/app_name"
+                        android:textColor="@color/super_ip_text_primary"
+                        android:textSize="27sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/super_ip_secure_private"
+                        android:textColor="@color/super_ip_text_muted"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/super_ip_online_dot" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/super_ip_status_panel"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/connection_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/super_ip_choose_config"
+                    android:textColor="@color/super_ip_text_secondary"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/connect_button"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"
+                    android:layout_marginTop="14dp"
+                    android:elevation="0dp"
+                    android:text="@string/super_ip_connect"
+                    android:textAllCaps="false"
+                    android:textColor="@color/super_ip_accent_dark"
+                    android:textSize="19sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/super_ip_accent"
+                    app:cornerRadius="78dp"
+                    app:icon="@drawable/ic_vpn_notification"
+                    app:iconGravity="textTop"
+                    app:iconPadding="9dp"
+                    app:iconSize="28dp"
+                    app:iconTint="@color/super_ip_accent_dark" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/configs_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/super_ip_configs"
+                    android:textColor="@color/super_ip_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/super_ip_tap_to_select"
+                    android:textColor="@color/super_ip_text_muted"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/empty_hint"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="84dp"
                 android:gravity="center"
                 android:text="@string/super_ip_empty_configs"
                 android:textColor="@color/super_ip_text_secondary"
@@ -99,17 +155,23 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/create_fab"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="58dp"
                 android:layout_marginTop="4dp"
-                android:text="@string/super_ip_add"
+                android:background="@drawable/super_ip_add_background"
+                android:elevation="0dp"
+                android:text="@string/super_ip_add_config"
                 android:textAllCaps="false"
                 android:textColor="@color/super_ip_text_primary"
-                app:cornerRadius="16dp"
+                android:textSize="15sp"
+                app:backgroundTint="@android:color/transparent"
+                app:cornerRadius="20dp"
                 app:icon="@drawable/ic_action_add_white"
                 app:iconGravity="textStart"
-                app:iconTint="@color/super_ip_accent" />
+                app:iconPadding="10dp"
+                app:iconTint="@color/super_ip_accent"
+                app:strokeColor="@color/super_ip_card_border"
+                app:strokeWidth="1dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

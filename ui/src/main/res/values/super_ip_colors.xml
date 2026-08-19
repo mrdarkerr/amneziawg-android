@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="super_ip_background">#08110E</color>
-    <color name="super_ip_card">#12201B</color>
-    <color name="super_ip_card_selected">#18362C</color>
-    <color name="super_ip_card_border">#29433A</color>
-    <color name="super_ip_accent">#28D17C</color>
-    <color name="super_ip_text_primary">#F2FFF8</color>
-    <color name="super_ip_text_secondary">#93ADA2</color>
+    <color name="super_ip_background">#07100D</color>
+    <color name="super_ip_surface">#0C1814</color>
+    <color name="super_ip_card">#101E19</color>
+    <color name="super_ip_card_selected">#143326</color>
+    <color name="super_ip_card_border">#203B31</color>
+    <color name="super_ip_accent">#42E894</color>
+    <color name="super_ip_accent_dark">#092C1D</color>
+    <color name="super_ip_text_primary">#F3FFF8</color>
+    <color name="super_ip_text_secondary">#8EA79C</color>
+    <color name="super_ip_text_muted">#60786E</color>
 </resources>

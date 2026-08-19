@@ -21,6 +21,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.Observable
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -204,7 +205,25 @@ class TunnelListFragment : BaseFragment() {
                 }
                 binding.tunnelMore.setOnClickListener {
                     selectedTunnel = item
-                    (activity as? org.amnezia.awg.activity.MainActivity)?.showSelectedTunnelDetails()
+                    PopupMenu(requireContext(), binding.tunnelMore).apply {
+                        menu.add(0, R.id.super_ip_menu_details, 0, R.string.super_ip_details)
+                        menu.add(0, R.id.super_ip_menu_edit, 1, R.string.edit)
+                        setOnMenuItemClickListener { menuItem ->
+                            val host = activity as? org.amnezia.awg.activity.MainActivity
+                            when (menuItem.itemId) {
+                                R.id.super_ip_menu_details -> {
+                                    host?.showSelectedTunnelDetails()
+                                    true
+                                }
+                                R.id.super_ip_menu_edit -> {
+                                    host?.editSelectedTunnel()
+                                    true
+                                }
+                                else -> false
+                            }
+                        }
+                        show()
+                    }
                 }
                 binding.root.setOnLongClickListener {
                     actionModeListener.toggleItemChecked(position)

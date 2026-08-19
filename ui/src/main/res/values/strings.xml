@@ -76,6 +76,9 @@
     <string name="super_ip_ready">Ready</string>
     <string name="super_ip_empty_configs">Add your first config</string>
     <string name="super_ip_select_first">Select a config first</string>
+    <string name="super_ip_secure_private">Private network · AWG protocol</string>
+    <string name="super_ip_tap_to_select">Tap a row to select</string>
+    <string name="super_ip_add_config">Add new config</string>
     <string name="bad_config_context">%1$s\'s %2$s</string>
     <string name="bad_config_context_top_level">%s</string>
     <string name="bad_config_error">%1$s in %2$s</string>

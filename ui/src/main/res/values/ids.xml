@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="super_ip_menu_details" type="id" />
+    <item name="super_ip_menu_edit" type="id" />
     <item name="item_change_listener" type="id" />
 </resources>
