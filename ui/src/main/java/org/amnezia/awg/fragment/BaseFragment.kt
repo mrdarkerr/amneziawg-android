@@ -87,6 +87,27 @@ abstract class BaseFragment : Fragment(), OnSelectedTunnelChangedListener {
         }
     }
 
+    protected fun setTunnelState(tunnel: ObservableTunnel, checked: Boolean, anchor: View) {
+        val activity = activity ?: return
+        activity.lifecycleScope.launch {
+            if (Application.getBackend() is GoBackend) {
+                try {
+                    val intent = GoBackend.VpnService.prepare(activity)
+                    if (intent != null) {
+                        pendingTunnel = tunnel
+                        pendingTunnelUp = checked
+                        permissionActivityResultLauncher.launch(intent)
+                        return@launch
+                    }
+                } catch (e: Throwable) {
+                    Snackbar.make(anchor, activity.getString(R.string.error_prepare, ErrorMessages[e]), Snackbar.LENGTH_LONG).show()
+                    return@launch
+                }
+            }
+            setTunnelStateWithPermissionsResult(tunnel, checked)
+        }
+    }
+
     private fun setTunnelStateWithPermissionsResult(tunnel: ObservableTunnel, checked: Boolean) {
         val activity = activity ?: return
         activity.lifecycleScope.launch {

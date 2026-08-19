@@ -1,4 +1,4 @@
-# AmneziaWG for Android — mrdarkerr fork
+# Super IP — AmneziaWG Android fork
 
 This repository is a maintained fork of [amnezia-vpn/amneziawg-android](https://github.com/amnezia-vpn/amneziawg-android).
 It keeps the upstream AmneziaWG protocol and Android application identity while adding practical client features.

@@ -21,6 +21,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.databinding.Observable
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.zxing.qrcode.QRCodeReader
@@ -50,6 +51,12 @@ class TunnelListFragment : BaseFragment() {
     private var actionMode: ActionMode? = null
     private var backPressedCallback: OnBackPressedCallback? = null
     private var binding: TunnelListFragmentBinding? = null
+    private val selectedStateCallback = object : Observable.OnPropertyChangedCallback() {
+        override fun onPropertyChanged(sender: Observable, propertyId: Int) {
+            if (propertyId == 0 || propertyId == org.amnezia.awg.BR.state)
+                updateConnectButton(selectedTunnel)
+        }
+    }
     private val tunnelFileImportResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { data ->
         if (data == null) return@registerForActivityResult
         val activity = activity ?: return@registerForActivityResult
@@ -98,6 +105,11 @@ class TunnelListFragment : BaseFragment() {
         binding = TunnelListFragmentBinding.inflate(inflater, container, false)
         val bottomSheet = AddTunnelsSheet()
         binding?.apply {
+            tunnelList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                requireContext(),
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+                false
+            )
             createFab.setOnClickListener {
                 if (childFragmentManager.findFragmentByTag("BOTTOM_SHEET") != null)
                     return@setOnClickListener
@@ -123,6 +135,18 @@ class TunnelListFragment : BaseFragment() {
                 }
                 bottomSheet.showNow(childFragmentManager, "BOTTOM_SHEET")
             }
+            connectButton.setOnClickListener {
+                val tunnel = selectedTunnel
+                if (tunnel == null) {
+                    showSnackbar(getString(R.string.super_ip_select_first))
+                    return@setOnClickListener
+                }
+                setTunnelState(
+                    tunnel,
+                    tunnel.state != org.amnezia.awg.backend.Tunnel.State.UP,
+                    connectButton
+                )
+            }
             executePendingBindings()
         }
         backPressedCallback = requireActivity().onBackPressedDispatcher.addCallback(this) { actionMode?.finish() }
@@ -132,6 +156,7 @@ class TunnelListFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
+        selectedTunnel?.removeOnPropertyChangedCallback(selectedStateCallback)
         binding = null
         super.onDestroyView()
     }
@@ -143,10 +168,13 @@ class TunnelListFragment : BaseFragment() {
 
     override fun onSelectedTunnelChanged(oldTunnel: ObservableTunnel?, newTunnel: ObservableTunnel?) {
         binding ?: return
+        oldTunnel?.removeOnPropertyChangedCallback(selectedStateCallback)
+        newTunnel?.addOnPropertyChangedCallback(selectedStateCallback)
         lifecycleScope.launch {
             val tunnels = Application.getTunnelManager().getTunnels()
             if (newTunnel != null) viewForTunnel(newTunnel, tunnels)?.setSingleSelected(true)
             if (oldTunnel != null) viewForTunnel(oldTunnel, tunnels)?.setSingleSelected(false)
+            updateConnectButton(newTunnel)
         }
     }
 
@@ -178,6 +206,10 @@ class TunnelListFragment : BaseFragment() {
                         actionModeListener.toggleItemChecked(position)
                     }
                 }
+                binding.tunnelMore.setOnClickListener {
+                    selectedTunnel = item
+                    (activity as? org.amnezia.awg.activity.MainActivity)?.showSelectedTunnelDetails()
+                }
                 binding.root.setOnLongClickListener {
                     actionModeListener.toggleItemChecked(position)
                     true
@@ -187,6 +219,23 @@ class TunnelListFragment : BaseFragment() {
                 else
                     (binding.root as MultiselectableRelativeLayout).setSingleSelected(selectedTunnel == item)
             }
+        }
+        lifecycleScope.launch {
+            val tunnels = Application.getTunnelManager().getTunnels()
+            if (selectedTunnel == null)
+                selectedTunnel = Application.getTunnelManager().lastUsedTunnel ?: tunnels.firstOrNull()
+            updateConnectButton(selectedTunnel)
+        }
+    }
+
+    private fun updateConnectButton(tunnel: ObservableTunnel?) {
+        val currentBinding = binding ?: return
+        val connected = tunnel?.state == org.amnezia.awg.backend.Tunnel.State.UP
+        currentBinding.connectButton.text = getString(if (connected) R.string.super_ip_disconnect else R.string.super_ip_connect)
+        currentBinding.connectionHint.text = when {
+            tunnel == null -> getString(R.string.super_ip_choose_config)
+            connected -> getString(R.string.super_ip_connected_to, tunnel.name)
+            else -> getString(R.string.super_ip_selected_config, tunnel.name)
         }
     }
 

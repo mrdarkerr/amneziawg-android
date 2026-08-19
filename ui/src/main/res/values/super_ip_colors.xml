@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="super_ip_background">#08110E</color>
+    <color name="super_ip_card">#12201B</color>
+    <color name="super_ip_card_selected">#18362C</color>
+    <color name="super_ip_card_border">#29433A</color>
+    <color name="super_ip_accent">#28D17C</color>
+    <color name="super_ip_text_primary">#F2FFF8</color>
+    <color name="super_ip_text_secondary">#93ADA2</color>
+</resources>

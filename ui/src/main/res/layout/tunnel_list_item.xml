@@ -2,84 +2,59 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
-
         <import type="org.amnezia.awg.model.ObservableTunnel" />
-
         <import type="org.amnezia.awg.model.ObservableTunnel.ConnectionStatus" />
-
-        <import type="org.amnezia.awg.backend.Tunnel.State" />
-
-        <variable
-            name="collection"
-            type="org.amnezia.awg.databinding.ObservableKeyedArrayList&lt;String, ObservableTunnel&gt;" />
-
-        <variable
-            name="key"
-            type="String" />
-
-        <variable
-            name="item"
-            type="org.amnezia.awg.model.ObservableTunnel" />
-
-        <variable
-            name="fragment"
-            type="org.amnezia.awg.fragment.TunnelListFragment" />
+        <variable name="collection" type="org.amnezia.awg.databinding.ObservableKeyedArrayList&lt;String, ObservableTunnel&gt;" />
+        <variable name="key" type="String" />
+        <variable name="item" type="org.amnezia.awg.model.ObservableTunnel" />
+        <variable name="fragment" type="org.amnezia.awg.fragment.TunnelListFragment" />
     </data>
 
     <org.amnezia.awg.widget.MultiselectableRelativeLayout
         android:id="@+id/tunnel_list_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/list_item_background"
-        android:descendantFocusability="beforeDescendants"
+        android:layout_width="176dp"
+        android:layout_height="104dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/super_ip_config_card"
         android:focusable="true"
-        android:nextFocusRight="@+id/tunnel_switch"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp">
+        android:padding="14dp">
 
-        <LinearLayout
-            android:id="@+id/tunnel_info_layout"
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/tunnel_more"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/super_ip_details"
+            android:padding="8dp"
+            android:src="@drawable/ic_action_more_vert"
+            app:tint="@color/super_ip_text_secondary" />
+
+        <TextView
+            android:id="@+id/tunnel_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/tunnel_switch"
-            android:orientation="vertical">
+            android:layout_toStartOf="@id/tunnel_more"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{key}"
+            android:textColor="@color/super_ip_text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Turkey 2" />
 
-            <TextView
-                android:id="@+id/tunnel_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{key}"
-                android:textAppearance="?attr/textAppearanceBodyLarge"
-                tools:text="@sample/interface_names.json/names/names/name" />
-
-            <TextView
-                android:id="@+id/tunnel_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @string/tunnel_status_connected : @string/tunnel_status_connecting}"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @color/tunnel_status_connected : @color/tunnel_status_connecting}"
-                android:visibility="@{item.connectionStatus == ConnectionStatus.DISCONNECTED ? android.view.View.GONE : android.view.View.VISIBLE}"
-                tools:text="Подключено"
-                tools:textColor="@color/tunnel_status_connected" />
-        </LinearLayout>
-
-        <org.amnezia.awg.widget.ToggleSwitch
-            android:id="@+id/tunnel_switch"
+        <TextView
+            android:id="@+id/tunnel_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:nextFocusLeft="@+id/tunnel_list_item"
-            app:checked="@{item.state == State.UP}"
-            app:onBeforeCheckedChanged="@{fragment::setTunnelState}"
-            tools:checked="@sample/interface_names.json/names/checked/checked" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:text="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @string/tunnel_status_connected : (item.connectionStatus == ConnectionStatus.CONNECTING ? @string/tunnel_status_connecting : @string/super_ip_ready)}"
+            android:textColor="@{item.connectionStatus == ConnectionStatus.CONNECTED ? @color/tunnel_status_connected : @color/super_ip_text_secondary}"
+            android:textSize="13sp"
+            tools:text="Ready" />
     </org.amnezia.awg.widget.MultiselectableRelativeLayout>
 </layout>

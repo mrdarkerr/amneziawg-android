@@ -63,7 +63,18 @@
     <string name="allow_remote_control_intents_summary_on">External apps may toggle tunnels (advanced)</string>
     <string name="allow_remote_control_intents_title">Allow remote control apps</string>
     <string name="allowed_ips">Allowed IPs</string>
-    <string name="app_name" translatable="false">AmneziaWG</string>
+    <string name="app_name" translatable="false">Super IP</string>
+    <string name="super_ip_connect">Connect</string>
+    <string name="super_ip_disconnect">Disconnect</string>
+    <string name="super_ip_choose_config">Choose a config to start</string>
+    <string name="super_ip_selected_config">%1$s selected</string>
+    <string name="super_ip_connected_to">Connected to %1$s</string>
+    <string name="super_ip_configs">Your configs</string>
+    <string name="super_ip_add">Add</string>
+    <string name="super_ip_details">Details</string>
+    <string name="super_ip_ready">Ready</string>
+    <string name="super_ip_empty_configs">Add your first config</string>
+    <string name="super_ip_select_first">Select a config first</string>
     <string name="bad_config_context">%1$s\'s %2$s</string>
     <string name="bad_config_context_top_level">%s</string>
     <string name="bad_config_error">%1$s in %2$s</string>
@@ -211,12 +222,12 @@
     <string name="quick_settings_tile_add_summary">The shortcut tile toggles the most recent tunnel</string>
     <string name="quick_settings_tile_add_failure">Unable to add shortcut tile: error %d</string>
     <string name="quick_settings_tile_action">Toggle tunnel</string>
-    <string name="quick_settings_tile_label">AmneziaWG</string>
+    <string name="quick_settings_tile_label">Super IP</string>
     <string name="quick_settings_tile_connected">%1$s connected</string>
     <string name="quick_settings_tile_disconnected">%1$s disconnected</string>
-    <string name="quick_settings_tile_no_tunnel">Open AmneziaWG to select a tunnel</string>
-    <string name="quick_settings_tile_manual_title">Add AmneziaWG to Quick Settings</string>
-    <string name="quick_settings_tile_manual_summary">Open the Quick Settings panel, tap Edit or the three-dot menu, then drag the AmneziaWG tile into the active tiles. This works on Samsung, Xiaomi, Pixel and other Android devices.</string>
+    <string name="quick_settings_tile_no_tunnel">Open Super IP to select a config</string>
+    <string name="quick_settings_tile_manual_title">Add Super IP to Quick Settings</string>
+    <string name="quick_settings_tile_manual_summary">Open the Quick Settings panel, tap Edit or the three-dot menu, then drag the Super IP tile into the active tiles. This works on Samsung, Xiaomi, Pixel and other Android devices.</string>
     <string name="quick_settings_tile_open_settings">Open Quick Settings</string>
     <string name="restore_on_boot_summary_off">Will not bring up enabled tunnels at boot</string>
     <string name="restore_on_boot_summary_on">Will bring up enabled tunnels at boot</string>

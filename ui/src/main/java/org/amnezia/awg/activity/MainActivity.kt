@@ -6,7 +6,7 @@ package org.amnezia.awg.activity
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.content.Intent
+
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -56,6 +56,7 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
         val backStackEntries = supportFragmentManager.backStackEntryCount
         backPressedCallback?.isEnabled = backStackEntries >= 1
         if (actionBar == null) return
+        if (backStackEntries == 0) actionBar!!.hide() else actionBar!!.show()
         // Do not show the home menu when the two-pane layout is at the detail view (see above).
         val minBackStackEntries = if (isTwoPaneLayout) 2 else 1
         actionBar!!.setDisplayHomeAsUpEnabled(backStackEntries >= minBackStackEntries)
@@ -79,8 +80,7 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_activity, menu)
-        return true
+        return false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -101,11 +101,6 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
             }
             // This menu item is handled by the editor fragment.
             R.id.menu_action_save -> false
-            R.id.menu_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-                true
-            }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -113,30 +108,22 @@ class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener 
     override fun onSelectedTunnelChanged(
         oldTunnel: ObservableTunnel?,
         newTunnel: ObservableTunnel?
-    ): Boolean {
+    ): Boolean = true
+
+    fun showSelectedTunnelDetails() {
+        if (selectedTunnel == null) return
         val fragmentManager = supportFragmentManager
-        if (fragmentManager.isStateSaved) {
-            return false
-        }
+        if (fragmentManager.isStateSaved) return
 
         val backStackEntries = fragmentManager.backStackEntryCount
-        if (newTunnel == null) {
-            // Clear everything off the back stack (all editors and detail fragments).
-            fragmentManager.popBackStackImmediate(0, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            return true
-        }
         if (backStackEntries == 2) {
-            // Pop the editor off the back stack to reveal the detail fragment. Use the immediate
-            // method to avoid the editor picking up the new tunnel while it is still visible.
             fragmentManager.popBackStackImmediate()
         } else if (backStackEntries == 0) {
-            // Create and show a new detail fragment.
             fragmentManager.commit {
                 add(R.id.detail_container, TunnelDetailFragment())
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack(null)
             }
         }
-        return true
     }
 }
